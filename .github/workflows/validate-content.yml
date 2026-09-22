@@ -1,0 +1,39 @@
+name: Validate Wallpaper Content
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "content/**"
+      - "scripts/**"
+      - ".github/workflows/validate-content.yml"
+
+  pull_request:
+    paths:
+      - "content/**"
+      - "scripts/**"
+      - ".github/workflows/validate-content.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Content
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image validation dependency
+        run: python -m pip install --disable-pip-version-check --no-input pillow
+
+      - name: Validate wallpaper content
+        run: python scripts/validate_content.py
